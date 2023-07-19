@@ -1,30 +1,19 @@
-#%%
 import base64
 import random
 import threading
 from flask import Flask, request
-
-# import numpy as np
-# from fastapi import FastAPI
-
 from pydantic import BaseModel
 import io
 import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
 
-
 some_var = 0
 lo = threading.Lock()
 app = Flask(__name__)
-
-origins = [
-    "*"
-]
-
+origins = ["*"]
 
 def plot_mac(data: dict):
-    print('===============start===================')
     projects = data["projects"]
     ers = data["ers"]
     macs = data["macs"]
@@ -36,13 +25,12 @@ def plot_mac(data: dict):
     df.reset_index()
     df.set_index("Projects", inplace=True)
     df["Cumulative ER"] = df["ER (CO2e)"].cumsum()
-
     df["xpos"] = ""
 
     for index in df.index:
         i = df.index.get_loc(index)
 
-        if i == 0:  # First index
+        if i == 0:
             df.loc[index, "xpos"] = df.loc[index, "ER (CO2e)"] / 2
 
         else:
@@ -50,20 +38,17 @@ def plot_mac(data: dict):
             b = df.iloc[i-1 , 2]
             df.loc[index, "xpos"] = b+a
            
-    # df["xpos_labels"] = df["xpos"] - df["ER (CO2e)"] / 2 
     df["xpos_labels"] = df["xpos"] 
-
-    print(df)
-    
     plt.figure(figsize=(14, 8))
     plt.rcParams["font.size"] = 12
-
     xpos = df["xpos"].values.tolist()
     y = df["MAC ($/CO2e)"].values.tolist()
     w = df["ER (CO2e)"].values.tolist()
     l = []
+
     for i in range(0, len(y) + 1):
         l.append((random.random(), random.random(), random.random()))
+    
     plt.bar(xpos,
             height=y,
             width=w,
@@ -72,10 +57,8 @@ def plot_mac(data: dict):
             alpha=0.75)
     
     for index in df.index:
-
         x_ref = df.loc[index, "xpos_labels"]
         y_ref = df.loc[index, "MAC ($/CO2e)"]
-      
 
         if y_ref<=0:
             plt.annotate(index, xy=(x_ref, y_ref), xytext=(x_ref, y_ref - 0.05*y_ref),rotation=90)
@@ -117,43 +100,32 @@ def plot_mac(data: dict):
     plt.clf()
     plt.close('all')
     base64_jpg_data = base64.b64encode(string_bytes.read())
-    print('==================end=================')
 
     return base64_jpg_data
-
 
 class PlotData(BaseModel):
     projects: list
     ers: list
     macs: list
 
-
 @app.route('/image', methods=['POST'])
 def image():
-    print(threading.current_thread())
     global lo
     with lo:
         data = request.json
-        print(data)
         return plot_mac({
             "projects": data["projects"],
             "ers": data["ers"],
             "macs": data["macs"]
         })
-   
-   
-
 
 @app.route("/")
 async def root():
     return "index"
 
-
 @app.route("/hello/{name}")
 async def say_hello(name: str):
     return {"message": f"Hello {name}"}
 
-
 if __name__ == '__main__':
     app.run(host='localhost', port=8000, debug=False, use_reloader=True)
-
