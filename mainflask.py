@@ -6,30 +6,21 @@ from flask import Flask, request
 
 # import numpy as np
 # from fastapi import FastAPI
-# from fastapi.middleware.cors import CORSMiddleware
+
 from pydantic import BaseModel
 import io
 import pandas as pd
 import matplotlib
-# matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
 some_var = 0
 lo = threading.Lock()
-# app = FastAPI()
 app = Flask(__name__)
 
 origins = [
     "*"
 ]
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
 
 
 def plot_mac(data: dict):
@@ -87,14 +78,10 @@ def plot_mac(data: dict):
       
 
         if y_ref<=0:
-            # plt.annotate(index, xy=(x_ref, y_ref), xytext=(x_ref, y_ref - 10))
             plt.annotate(index, xy=(x_ref, y_ref), xytext=(x_ref, y_ref - 0.05*y_ref),rotation=90)
         else:
-            # plt.annotate(index, xy=(x_ref, y_ref), xytext=(x_ref, y_ref + 10))
             plt.annotate(index, xy=(x_ref, y_ref), xytext=(x_ref,  0.05*y_ref),rotation=90)
-    # plt.rcParams['axes.facecolor'] = 'oldlace'
     plt.grid(True, color="lightgray", linewidth="1.4", linestyle="-")
-    # plt.xlim(0, df["ER (CO2e)"].sum())
     plt.xlim(0, df["ER (CO2e)"].sum())
     if df["MAC ($/CO2e)"].max()<0:
       plt.ylim(df["MAC ($/CO2e)"].min() + df["MAC ($/CO2e)"].min()*0.1,
@@ -117,12 +104,10 @@ def plot_mac(data: dict):
     plt.xlabel("Reduction of GHG equivalent(tCO₂e/yr) ")
     plt.ylabel("Cost of reduction options(US$/tCO₂e)")
     
-    # plt.title("Marginal abatement cost curve for Mexico in 2020")
 
 
    
     plt.tight_layout()
-    # plt.show()
 
     string_bytes = io.BytesIO()
     plt.savefig(string_bytes, format='jpg')
@@ -145,11 +130,6 @@ class PlotData(BaseModel):
 
 @app.route('/image', methods=['POST'])
 def image():
-    # projects = ["project 1", "project 2", "project 3", "project 4", "project 5", "project 6", "project 7"]
-    
-    # ers = [120, 100, 40, 50, 60, 80, 200]
-    
-    # macs = [-50, -20, -10, 10, 15, 25, 30]
     print(threading.current_thread())
     global lo
     with lo:
