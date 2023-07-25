@@ -1,9 +1,5 @@
 import base64
 import random
-<<<<<<< HEAD
-
-=======
->>>>>>> e9283557050d5014709d1b84a3ea77dbbd7369b5
 import numpy as np
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
