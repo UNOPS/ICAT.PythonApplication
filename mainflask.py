@@ -64,30 +64,33 @@ def plot_mac(data: dict):
             plt.annotate(index, xy=(x_ref, y_ref), xytext=(x_ref, y_ref - 0.05*y_ref),rotation=90)
         else:
             plt.annotate(index, xy=(x_ref, y_ref), xytext=(x_ref,  0.05*y_ref),rotation=90)
-    
     plt.grid(True, color="lightgray", linewidth="1.4", linestyle="-")
     plt.xlim(0, df["ER (CO2e)"].sum())
-    
     if df["MAC ($/CO2e)"].max()<0:
-        plt.ylim(df["MAC ($/CO2e)"].min() + df["MAC ($/CO2e)"].min()*0.1,
-            -df["MAC ($/CO2e)"].min()*0.1)
+      plt.ylim(df["MAC ($/CO2e)"].min() + df["MAC ($/CO2e)"].min()*0.1,
+             -df["MAC ($/CO2e)"].min()*0.1)
     elif df["MAC ($/CO2e)"].min()>0:
-        plt.ylim(-df["MAC ($/CO2e)"].max()*0.1,
-            df["MAC ($/CO2e)"].max() + df["MAC ($/CO2e)"].max()*0.1)
+       plt.ylim(-df["MAC ($/CO2e)"].max()*0.1,
+             df["MAC ($/CO2e)"].max() + df["MAC ($/CO2e)"].max()*0.1)
     else:         
-        plt.ylim(df["MAC ($/CO2e)"].min() + df["MAC ($/CO2e)"].min()*0.1,
-            df["MAC ($/CO2e)"].max() + df["MAC ($/CO2e)"].max()*0.1 )
+       plt.ylim(df["MAC ($/CO2e)"].min() + df["MAC ($/CO2e)"].min()*0.1,
+             df["MAC ($/CO2e)"].max() + df["MAC ($/CO2e)"].max()*0.1 )
     
     current_values = plt.gca().get_xticks()
     plt.gca().set_xticklabels(['{:,}'.format(x) for x in current_values])
+
     current_values = plt.gca().get_yticks()
     plt.gca().set_yticklabels(['{:,}'.format(x) for x in current_values])
+
     plt.xlabel("Reduction of GHG equivalent(tCO₂e/yr) ")
     plt.ylabel("Cost of reduction options(US$/tCO₂e)")
+
     plt.tight_layout()
+
     string_bytes = io.BytesIO()
     plt.savefig(string_bytes, format='jpg')
     string_bytes.seek(0)
+    
     plt.cla()
     plt.clf()
     plt.close('all')
