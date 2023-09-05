@@ -65,6 +65,16 @@ $ gcloud builds submit --tag [CONTAINER PATH]
 
 After the application installation, the API Documentation is available in the application URL + `/docs/` with [Swagger](https://swagger.io/solutions/api-documentation/).
 
+## Dependencies
+
+This application provides API service to CountryPortalService application.
+
+The complete dependency diagram of TraCAD Country and PMU applications:
+
+<p align="left">
+  <img src="https://lucid.app/publicSegments/view/7e56ab6c-3c14-428b-be1d-63dfd33760be/image.png" width="800" alt="TraCAD Diagram" /></a>
+</p>
+
 ## License
 
 TraCAD - CountryPortalService is [Affero GPL licensed](https://www.gnu.org/licenses/agpl-3.0.en.html).
